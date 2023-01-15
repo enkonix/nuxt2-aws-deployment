@@ -1,0 +1,13 @@
+{
+  "name": "your-name-project",
+  "devDependencies": {
+    "express": "^4.18.2",
+    "@vendia/serverless-express": "^4.5.4",
+    "enkonix-serverless-vpc-plugin": "^1.0.5",
+    "serverless": "2.66.2",
+    "serverless-content-encoding": "^1.1.0",
+    "serverless-domain-manager": "^6.2.1",
+    "serverless-plugin-warmup": "^5.3.1"
+  },
+  "type": "module"
+}

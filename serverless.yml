@@ -1,0 +1,64 @@
+service: enkonix-frontend
+frameworkVersion: '2.66.2'
+useDotenv: false
+
+provider:
+  name: aws
+  region: us-east-1
+  memorySize: 2048
+  timeout: 300
+  endpointType: REGIONAL
+  runtime: nodejs16.x
+  apiGateway:
+    binaryMediaTypes:
+      - '*/*'
+  logs:
+    restApi:
+      accessLogging: true
+      level: ERROR
+  tracing:
+    apiGateway: true
+    lambda: true
+
+functions:
+  nuxt:
+    handler: handler.nuxt
+    events:
+      - http: ANY /
+      - http: ANY /{proxy+}
+    tracing: Active
+
+custom:
+  warmup:
+    default:
+      enabled: true
+      events:
+        - schedule: cron(0/4 * ? * * *)
+      concurrency: 3
+      prewarm: true
+  contentEncoding:
+    minimumCompressionSize: 0
+  vpcConfig:
+    enabled: true
+    cidrBlock: '10.0.0.0/16'
+    createDbSubnet: true
+    createNatInstance: false
+    createNatGateway: 1
+    createBastionHost: false
+    createParameters: true
+    subnetGroups: []
+    services: []
+    exportOutputs: true
+  customDomain:
+    domainName: ${env:FRONTEND_DOMAIN}
+    basePath: ''
+    stage: ${opt:stage}
+    endpointType: 'regional'
+    autoDomain: true
+    createRoute53Record: true
+    certificateName: ${env:FRONTEND_DOMAIN}
+plugins:
+  - serverless-plugin-warmup
+  - serverless-content-encoding
+  - enkonix-serverless-vpc-plugin
+  - serverless-domain-manager
